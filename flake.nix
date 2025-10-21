@@ -70,19 +70,16 @@
         # master 分支
         re3-master = buildRe3 "master".drv // {
           meta.description = "Re3 master branch: the mainline GTA III engine port.";
-          meta.maintainers = with maintainers; [ gujial ];
         };
 
         # miami 分支（VC）
         re3-vc = buildRe3 "miami".drv // {
           meta.description = "Re3 Miami (VC) branch: GTA Vice City engine port.";
-          meta.maintainers = with maintainers; [ gujial ];
         };
 
         # lcs 分支
         re3-lcs = buildRe3 "lcs".drv // {
           meta.description = "Re3 LCS branch: GTA Liberty City Stories engine port.";
-          meta.maintainers = with maintainers; [ gujial ];
         };
       };
     };
