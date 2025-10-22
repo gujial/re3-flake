@@ -1,6 +1,47 @@
 # reLCS
-[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2FGTAmodding%2Fre3%2Fbadge%3Fref%3Dlcs&style=flat)](https://actions-badge.atrox.dev/GTAmodding/re3/goto?ref=lcs)
-<a href="https://discord.gg/RFNbjsUMGg"><img src="https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&longCache=true&style=flat" /></a>
+
+> 暂无 logo 图片（游戏图标同理）
+
+## Flake 使用说明
+
+1. Flake.nix 配置
+
+```nix
+{
+  inputs = {
+    re3-flake = {
+      url = "github:gujial/re3-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # ...
+  };
+  outputs = inputs@{ nixpkgs, re3flake, ... }: {
+    host = nixpkgs.lib.nixosSystem {
+      modules = [
+        (
+              { pkgs, ... }:
+              {
+                nixpkgs.overlays = [
+                  nur.overlays.default
+                ];
+
+                environment.systemPackages = [
+                  re3-flake.packages.${pkgs.system}.re3-lcs
+                  # ...
+                ];
+              }
+            )
+        # ...
+      ];
+    };
+  };
+}
+```
+
+2. 复制游戏文件到 ~/.reLCS
+3. 复制 gamefiles 到 ~/.reLCS 并覆盖原版游戏文件
+
+> 仅供学习交流使用，安装后请于 24 小时内删除，禁止用于商业用途，禁止传播盗版游戏。
 
 ## Intro
 
