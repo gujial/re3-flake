@@ -70,13 +70,23 @@
             else
               throw "Unknown branch: ${branch}";
 
-          re3-env =
+          name = 
             if branch == "master" then
-              "GTA_III_RE_DIR=~/.re3"
+              "Grand Theft Auto: III (re3)"
             else if branch == "miami" then
-              "GTA_VC_RE_DIR=~/.reVC"
+              "Grand Theft Auto: Vice City (reVC)"
             else if branch == "lcs" then
-              "GTA_LCS_RE_DIR=~/.reLCS"
+              "Grand Theft Auto: Liberty City Stories (reLCS)"
+            else
+              throw "Unknown branch: ${branch}";
+
+          re3-pwd =
+            if branch == "master" then
+              "~/.re3"
+            else if branch == "miami" then
+              "~/.reVC"
+            else if branch == "lcs" then
+              "~/.reLCS"
             else
               throw "Unknown branch: ${branch}";
 
@@ -92,9 +102,10 @@
             # 安装 desktop 文件
             cat > $out/share/applications/${program}.desktop <<EOF
             [Desktop Entry]
-            Name=${program}
+            Name=${name}
             Exec=${program}
             Icon=${program}
+            Path=${re3-pwd}
             Type=Application
             Categories=Game;
             Terminal=false
