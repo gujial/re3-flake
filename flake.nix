@@ -64,6 +64,13 @@
             else
               throw "Unknown branch: ${branch}";
 
+          re3-env = 
+            if branch == "master" then "GTA_III_RE_DIR=~/.re3"
+            else if branch == "miami" then "GTA_VC_RE_DIR=~/.reVC"
+            else if branch == "lcs" then "GTA_LCS_RE_DIR=~/.reLCS"
+            else
+              throw "Unknown branch: ${branch}";
+
           installPhase = ''
                       mkdir -p $out/bin
                       cp ../bin/linux-amd64-librw_gl3_glfw-oal/Release/${program} $out/bin/${program}
@@ -72,7 +79,7 @@
                       cat > $out/bin/${program}.desktop <<EOF
             [Desktop Entry]
             Name=${program}
-            Exec=$out/bin/${program}
+            Exec=env ${re3-env} $out/bin/${program}
             Icon=$out/bin/${program}.svg
             Type=Application
             Categories=Game;
