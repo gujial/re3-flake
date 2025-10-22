@@ -2,6 +2,10 @@
 
 <img src="./res/images/logo.svg" alt="reVC logo" width="200">
 
+- re3 有部分语言文件缺失
+- reVC 正常运行
+- reLCS 未测试
+
 ## Flake 使用说明
 
 1. Flake.nix 配置
