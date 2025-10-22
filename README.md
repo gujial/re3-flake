@@ -1,7 +1,43 @@
-<img src="https://github.com/GTAmodding/re3/blob/master/res/images/logo_1024.png?raw=true" alt="re3 logo" width="200">
+## Flake 使用说明
 
-[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2FGTAmodding%2Fre3%2Fbadge%3Fref%3Dmaster&style=flat)](https://actions-badge.atrox.dev/GTAmodding/re3/goto?ref=master)
-<a href="https://discord.gg/RFNbjsUMGg"><img src="https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&longCache=true&style=flat" /></a>
+1. Flake.nix 配置
+
+```nix
+{
+  inputs = {
+    re3-flake = {
+      url = "github:gujial/re3-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # ...
+  };
+  outputs = inputs@{ nixpkgs, re3flake, ... }: {
+    host = nixpkgs.lib.nixosSystem {
+      modules = [
+        (
+              { pkgs, ... }:
+              {
+                nixpkgs.overlays = [
+                  nur.overlays.default
+                ];
+
+                environment.systemPackages = [
+                  re3-flake.packages.${pkgs.system}.re3
+                  # ...
+                ];
+              }
+            )
+        # ...
+      ];
+    };
+  };
+}
+```
+
+2. 复制游戏文件到 ~/.re3
+3. 复制 gamefiles 到 ~/.re3 并覆盖原版游戏文件
+
+> 仅供学习交流使用，安装后请于 24 小时内删除，禁止用于商业用途，禁止传播盗版游戏。
 
 ## Intro
 
