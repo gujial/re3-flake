@@ -22,9 +22,12 @@
             repo = "re3-flake";
             rev = "refs/heads/${branch}";
             sha256 =
-              if branch == "master" then "WCvs5QGkfnj33yu26LdSVTtwhuLyB3NhkT1i1nirvCk="
-              else if branch == "miami" then "VlDLAptJ4eRzyjtTfHwsvqAvHsRDbYfadPV1uR8nkZU="
-              else if branch == "lcs" then "s3GLZcggNiv0yBFe5qflwcGU7RSVOwsogW2v2/s7nZ0="
+              if branch == "master" then
+                "WCvs5QGkfnj33yu26LdSVTtwhuLyB3NhkT1i1nirvCk="
+              else if branch == "miami" then
+                "VlDLAptJ4eRzyjtTfHwsvqAvHsRDbYfadPV1uR8nkZU="
+              else if branch == "lcs" then
+                "s3GLZcggNiv0yBFe5qflwcGU7RSVOwsogW2v2/s7nZ0="
               else
                 throw "Unknown branch: ${branch}";
             fetchSubmodules = true;
@@ -57,30 +60,41 @@
             make config=$config
           '';
 
-          program = 
-            if branch == "master" then "re3"
-            else if branch == "miami" then "reVC"
-            else if branch == "lcs" then "reLCS"
+          program =
+            if branch == "master" then
+              "re3"
+            else if branch == "miami" then
+              "reVC"
+            else if branch == "lcs" then
+              "reLCS"
             else
               throw "Unknown branch: ${branch}";
 
-          re3-env = 
-            if branch == "master" then "GTA_III_RE_DIR=~/.re3"
-            else if branch == "miami" then "GTA_VC_RE_DIR=~/.reVC"
-            else if branch == "lcs" then "GTA_LCS_RE_DIR=~/.reLCS"
+          re3-env =
+            if branch == "master" then
+              "GTA_III_RE_DIR=~/.re3"
+            else if branch == "miami" then
+              "GTA_VC_RE_DIR=~/.reVC"
+            else if branch == "lcs" then
+              "GTA_LCS_RE_DIR=~/.reLCS"
             else
               throw "Unknown branch: ${branch}";
 
           installPhase = ''
-                      mkdir -p $out/bin
-                      cp ../bin/linux-amd64-librw_gl3_glfw-oal/Release/${program} $out/bin/${program}
-                      cp ../res/images/logo.svg $out/bin/${program}.svg
+                      mkdir -p $out/bin $out/share/applications $out/share/icons/hicolor/256x256/apps
 
-                      cat > $out/bin/${program}.desktop <<EOF
+            # 安装程序
+            cp ../bin/linux-amd64-librw_gl3_glfw-oal/Release/${program} $out/bin/${program}
+
+            # 安装图标到标准图标路径
+            cp ../res/images/logo.svg $out/share/icons/hicolor/256x256/apps/${program}.svg
+
+            # 安装 desktop 文件
+            cat > $out/share/applications/${program}.desktop <<EOF
             [Desktop Entry]
             Name=${program}
-            Exec=env ${re3-env} $out/bin/${program}
-            Icon=$out/bin/${program}.svg
+            Exec=${program}
+            Icon=${program}
             Type=Application
             Categories=Game;
             Terminal=false
