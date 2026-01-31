@@ -19,7 +19,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     
     # 引入本包装器
-    re3-wrapper.url = "github:你的用户名/你的包装器仓库名";
+    re3-flake.url = "github:gujial/re3-flake";
   };
 
   outputs = { self, nixpkgs, re3-wrapper, ... }: {
@@ -28,9 +28,9 @@
         ({ pkgs, ... }: {
           environment.systemPackages = [
             # 选择你想要安装的游戏
-            re3-wrapper.packages.${pkgs.system}.re3
-            re3-wrapper.packages.${pkgs.system}.reVC
-            re3-wrapper.packages.${pkgs.system}.reLCS
+            re3-flake.packages.${pkgs.system}.re3
+            re3-flake.packages.${pkgs.system}.reVC
+            re3-flake.packages.${pkgs.system}.reLCS
           ];
         })
       ];
