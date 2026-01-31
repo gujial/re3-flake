@@ -1,135 +1,116 @@
 {
-  description = "Flake for building multiple re3 branches with branch-specific metadata";
+  description = "Launcher wrapper for re3 (GTA III, VC, LCS) with Desktop entries";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    
+    re3-master-repo.url = "github:gujial/re3/master"; 
+    re3-miami-repo.url  = "github:gujial/re3/miami";
+    re3-lcs-repo.url    = "github:gujial/re3/lcs";
   };
 
-  outputs =
-    { self, nixpkgs }:
+  outputs = { self, nixpkgs, re3-master-repo, re3-miami-repo, re3-lcs-repo, ... }:
     let
-      pkgs = import nixpkgs { system = "x86_64-linux"; };
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
+      forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system (import nixpkgs { inherit system; }));
 
-      # 构建单个分支的函数：直接返回 derivation，接受描述字符串
-      buildRe3 =
-        branch: desc:
-        pkgs.stdenv.mkDerivation rec {
-          pname = "re3-${branch}";
-          version = "1.0.0";
+      mkLauncher = pkgs: { gamePkg, program, steamDirName, dataDir, displayName }: 
+        let
+          # 1. 先创建包装脚本
+          wrapperScript = pkgs.writeShellScript "${program}-wrapper" ''
+            set -e
+            TARGET_DIR="$HOME/${dataDir}"
+            
+            if [ ! -d "$TARGET_DIR" ]; then
+              echo "--- 正在初始化 ${displayName} 原始文件 ---"
+              DEFAULT_STEAM_PATH="$HOME/.steam/steam/steamapps/common/${steamDirName}"
+              SOURCE_PATH="''${STEAM_GAME_DIR:-$DEFAULT_STEAM_PATH}"
 
-          src = pkgs.fetchFromGitHub {
-            owner = "gujial";
-            repo = "re3";
-            rev = "refs/heads/${branch}";
-            sha256 =
-              if branch == "master" then
-                "WCvs5QGkfnj33yu26LdSVTtwhuLyB3NhkT1i1nirvCk="
-              else if branch == "miami" then
-                "VlDLAptJ4eRzyjtTfHwsvqAvHsRDbYfadPV1uR8nkZU="
-              else if branch == "lcs" then
-                "s3GLZcggNiv0yBFe5qflwcGU7RSVOwsogW2v2/s7nZ0="
+              if [ -d "$SOURCE_PATH" ]; then
+                mkdir -p "$TARGET_DIR"
+                cp -rn "$SOURCE_PATH"/* "$TARGET_DIR/"
+                chmod -R u+w "$TARGET_DIR"
               else
-                throw "Unknown branch: ${branch}";
-            fetchSubmodules = true;
-          };
+                echo "错误: 找不到原始游戏目录！"
+                exit 1
+              fi
+            fi
 
-          nativeBuildInputs = [
-            pkgs.premake5
-            pkgs.gcc
-            pkgs.gnumake
-            pkgs.libx11
-            pkgs.libGL
-            pkgs.openal
-            pkgs.glew
-            pkgs.glfw
-            pkgs.libsndfile
-            pkgs.libmpg123
-          ];
+            echo "--- 同步引擎与资源 ---"
+            cp -f "${gamePkg}/bin/${program}" "$TARGET_DIR/"
+            if [ -d "${gamePkg}/share/${program}" ]; then
+              cp -rf "${gamePkg}/share/${program}"/* "$TARGET_DIR/"
+            fi
 
-          buildPhase = ''
-            cp -r $src/* $PWD/
-            cd $PWD
-            substituteInPlace printHash.sh --replace-warn '#!/usr/bin/env sh' '#!${pkgs.bash}/bin/bash'
-
-            echo "Running premake5 gmake2..."
-            premake5 gmake2 --with-librw
-
-            cd build
-            config="release_linux-amd64-librw_gl3_glfw-oal"
-            echo "Building $config..."
-            make config=$config
+            chmod -R u+w "$TARGET_DIR"
+            cd "$TARGET_DIR"
+            exec "./${program}" "$@"
           '';
+        in
+        # 2. 封装成一个完整的 Derivation
+        pkgs.stdenv.mkDerivation {
+          pname = "${program}-wrapped";
+          version = gamePkg.version or "1.0.0";
 
-          program =
-            if branch == "master" then
-              "re3"
-            else if branch == "miami" then
-              "reVC"
-            else if branch == "lcs" then
-              "reLCS"
-            else
-              throw "Unknown branch: ${branch}";
-
-          name = 
-            if branch == "master" then
-              "Grand Theft Auto: III (re3)"
-            else if branch == "miami" then
-              "Grand Theft Auto: Vice City (reVC)"
-            else if branch == "lcs" then
-              "Grand Theft Auto: Liberty City Stories (reLCS)"
-            else
-              throw "Unknown branch: ${branch}";
-
-          re3-pwd =
-            if branch == "master" then
-              "~/.re3"
-            else if branch == "miami" then
-              "~/.reVC"
-            else if branch == "lcs" then
-              "~/.reLCS"
-            else
-              throw "Unknown branch: ${branch}";
+          # 无需源码，直接在 installPhase 处理
+          phases = [ "installPhase" ];
 
           installPhase = ''
-                      mkdir -p $out/bin $out/share/applications $out/share/icons/hicolor/256x256/apps
+            mkdir -p $out/bin $out/share/applications $out/share/icons
 
-            # 安装程序
-            cp ../bin/linux-amd64-librw_gl3_glfw-oal/Release/${program} $out/bin/${program}
+            # 复制包装脚本
+            cp ${wrapperScript} $out/bin/${program}
+            chmod +x $out/bin/${program}
 
-            # 安装图标到标准图标路径
-            cp ../res/images/logo.svg $out/share/icons/hicolor/256x256/apps/${program}.svg
+            # 从原始包中复制图标 (源 Flake 已将图标放在 share/icons)
+            if [ -d "${gamePkg}/share/icons" ]; then
+              cp -r ${gamePkg}/share/icons $out/share/
+            fi
 
-            # 安装 desktop 文件
+            # 创建桌面文件
+            # 注意：Exec 指向我们这个包里的包装脚本
+            # Icon 名字对应源 Flake 里定义的图标名 (通常是 re3, reVC 等)
             cat > $out/share/applications/${program}.desktop <<EOF
             [Desktop Entry]
-            Name=${name}
-            Exec=${program}
+            Name=${displayName}
+            Exec=$out/bin/${program}
             Icon=${program}
-            Path=${re3-pwd}
             Type=Application
             Categories=Game;
             Terminal=false
             EOF
           '';
-
-          meta = with pkgs.lib; {
-            description =
-              if desc == null then
-                "Re3 branch ${branch} built with Premake, OpenAL, and auto-arch detection."
-              else
-                desc;
-            license = licenses.mit;
-            maintainers = with maintainers; [ gujial ];
-            platforms = platforms.linux;
-          };
         };
 
     in
     {
-      packages.x86_64-linux = {
-        re3 = buildRe3 "master" "Re3 master branch: the mainline GTA III engine port.";
-        re3-vc = buildRe3 "miami" "Re3 Miami (VC) branch: GTA Vice City engine port.";
-        re3-lcs = buildRe3 "lcs" "Re3 LCS branch: GTA Liberty City Stories engine port.";
-      };
+      packages = forAllSystems (system: pkgs: {
+        # GTA III
+        re3 = mkLauncher pkgs {
+          gamePkg = re3-master-repo.packages.${system}.default;
+          program = "re3";
+          displayName = "Grand Theft Auto III (re3)";
+          steamDirName = "Grand Theft Auto 3";
+          dataDir = ".re3";
+        };
+
+        # GTA Vice City
+        reVC = mkLauncher pkgs {
+          gamePkg = re3-miami-repo.packages.${system}.default; 
+          program = "reVC";
+          displayName = "Grand Theft Auto: Vice City (reVC)";
+          steamDirName = "Grand Theft Auto Vice City"; 
+          dataDir = ".reVC";
+        };
+
+        # GTA Liberty City Stories
+        reLCS = mkLauncher pkgs {
+          gamePkg = re3-lcs-repo.packages.${system}.default;
+          program = "reLCS";
+          displayName = "GTA: Liberty City Stories (reLCS)";
+          steamDirName = "GTALCS_FIXME"; 
+          dataDir = ".reLCS";
+        };
+      });
     };
 }
