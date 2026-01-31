@@ -2,7 +2,7 @@
   description = "Launcher wrapper for re3 (GTA III, VC, LCS) with Desktop entries";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     
     re3-master-repo.url = "github:gujial/re3/master"; 
     re3-miami-repo.url  = "github:gujial/re3/miami";
