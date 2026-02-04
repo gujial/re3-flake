@@ -311,11 +311,11 @@
         "opusfile": "opusfile_3"
       },
       "locked": {
-        "lastModified": 1770213644,
-        "narHash": "sha256-nGBBkgQnlRVVCSIiojX6Ye6xyiJ+BOSXAtw4fJtRTws=",
+        "lastModified": 1770216499,
+        "narHash": "sha256-DGHGZJdlqUrJ+XIZcqzLsrOBksBc11y4UGwzQmXwcWs=",
         "owner": "gujial",
         "repo": "re3",
-        "rev": "1c5b3d4af6fc534953aae7381cfaf85e3d70fa1b",
+        "rev": "b80a25ff31a66a86dd98c15b3b3559cf00166283",
         "type": "github"
       },
       "original": {
