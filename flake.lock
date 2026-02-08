@@ -48,13 +48,29 @@
         "type": "github"
       }
     },
+    "librw_4": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1757412609,
+        "narHash": "sha256-L27sTdE14wSrZQSPxqhJg5kwxdOvMW2WQ5OISco2qwI=",
+        "owner": "aap",
+        "repo": "librw",
+        "rev": "1499b9660cda257269992be04aa0595c6e82e0dc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "aap",
+        "repo": "librw",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1770136044,
-        "narHash": "sha256-tlFqNG/uzz2++aAmn4v8J0vAkV3z7XngeIIB3rM3650=",
+        "lastModified": 1770464364,
+        "narHash": "sha256-z5NJPSBwsLf/OfD8WTmh79tlSU8XgIbwmk6qB1/TFzY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e576e3c9cf9bad747afcddd9e34f51d18c855b4e",
+        "rev": "23d72dabcb3b12469f57b37170fcbc1789bd7457",
         "type": "github"
       },
       "original": {
@@ -97,6 +113,22 @@
       }
     },
     "nixpkgs_4": {
+      "locked": {
+        "lastModified": 1769598131,
+        "narHash": "sha256-e7VO/kGLgRMbWtpBqdWl0uFg8Y2XWFMdz0uUJvlML8o=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "fa83fd837f3098e3e678e6cf017b2b36102c7211",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-25.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_5": {
       "locked": {
         "lastModified": 1769598131,
         "narHash": "sha256-e7VO/kGLgRMbWtpBqdWl0uFg8Y2XWFMdz0uUJvlML8o=",
@@ -160,6 +192,22 @@
         "type": "github"
       }
     },
+    "ogg_4": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1751896827,
+        "narHash": "sha256-IoDEoh58OqiixLu8n3N/G9Fzqm4WYoTuGZLTLGw7XfM=",
+        "owner": "xiph",
+        "repo": "ogg",
+        "rev": "0288fadac3ac62d453409dfc83e9c4ab617d2472",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xiph",
+        "repo": "ogg",
+        "type": "github"
+      }
+    },
     "opus": {
       "flake": false,
       "locked": {
@@ -193,6 +241,22 @@
       }
     },
     "opus_3": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1769009966,
+        "narHash": "sha256-SyGUedfpqWb5+URiX0Tw/g3VPWxJBNPDSHmv/j9xHls=",
+        "owner": "xiph",
+        "repo": "opus",
+        "rev": "a3f0ec02b34281c38aefdaf4bbbd5787ad641d62",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xiph",
+        "repo": "opus",
+        "type": "github"
+      }
+    },
+    "opus_4": {
       "flake": false,
       "locked": {
         "lastModified": 1769009966,
@@ -256,6 +320,22 @@
         "type": "github"
       }
     },
+    "opusfile_4": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1765882903,
+        "narHash": "sha256-tANL22eOF5LqNVBQGW0Uh5IB9o3rFn6A7oXL4t16tcQ=",
+        "owner": "xiph",
+        "repo": "opusfile",
+        "rev": "cc04a82f7964067da6e3f5dddc7634b833c9402c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xiph",
+        "repo": "opusfile",
+        "type": "github"
+      }
+    },
     "re3-lcs-repo": {
       "inputs": {
         "librw": "librw",
@@ -302,7 +382,7 @@
         "type": "github"
       }
     },
-    "re3-miami-repo": {
+    "re3-miami-improved-repo": {
       "inputs": {
         "librw": "librw_3",
         "nixpkgs": "nixpkgs_4",
@@ -311,11 +391,34 @@
         "opusfile": "opusfile_3"
       },
       "locked": {
-        "lastModified": 1770342491,
-        "narHash": "sha256-RhfOnY+I2mtckNZGCVmuoeWWMdJbegJp6StG9d7E77s=",
+        "lastModified": 1770514531,
+        "narHash": "sha256-o3GhOukKjH8mNRsjkvEiSQUNPvuabNotZOOJLyQbjR8=",
         "owner": "gujial",
         "repo": "re3",
-        "rev": "093875a7a7ecea6554a4b3c46893e0076acb3755",
+        "rev": "9a86f1ee9025e6555b8fedd0d4e66ca0b7421e77",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gujial",
+        "ref": "miami-improve",
+        "repo": "re3",
+        "type": "github"
+      }
+    },
+    "re3-miami-repo": {
+      "inputs": {
+        "librw": "librw_4",
+        "nixpkgs": "nixpkgs_5",
+        "ogg": "ogg_4",
+        "opus": "opus_4",
+        "opusfile": "opusfile_4"
+      },
+      "locked": {
+        "lastModified": 1770378445,
+        "narHash": "sha256-dBXcXOUjpwVAUsDezgxkuKYKt/dEboTrc37wAZdhC94=",
+        "owner": "gujial",
+        "repo": "re3",
+        "rev": "87419bf0998872cd0d77ee292bdddb1bce3c4cc7",
         "type": "github"
       },
       "original": {
@@ -330,6 +433,7 @@
         "nixpkgs": "nixpkgs",
         "re3-lcs-repo": "re3-lcs-repo",
         "re3-master-repo": "re3-master-repo",
+        "re3-miami-improved-repo": "re3-miami-improved-repo",
         "re3-miami-repo": "re3-miami-repo"
       }
     }
