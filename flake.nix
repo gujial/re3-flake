@@ -7,7 +7,7 @@
     re3-master-repo.url = "github:gujial/re3/master"; 
     re3-miami-repo.url  = "github:gujial/re3/miami";
     re3-lcs-repo.url    = "github:gujial/re3/lcs";
-    re3-miami-improved-repo.url = "github:gujial/miami-improved";
+    re3-miami-improved-repo.url = "github:gujial/miami-improve";
   };
 
   outputs = { self, nixpkgs, re3-master-repo, re3-miami-repo, re3-lcs-repo, re3-miami-improved-repo, ... }:
