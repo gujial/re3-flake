@@ -7,9 +7,10 @@
     re3-master-repo.url = "github:gujial/re3/master"; 
     re3-miami-repo.url  = "github:gujial/re3/miami";
     re3-lcs-repo.url    = "github:gujial/re3/lcs";
+    re3-miami-improved-repo.url = "github:gujial/miami-improved";
   };
 
-  outputs = { self, nixpkgs, re3-master-repo, re3-miami-repo, re3-lcs-repo, ... }:
+  outputs = { self, nixpkgs, re3-master-repo, re3-miami-repo, re3-lcs-repo, re3-miami-improved-repo, ... }:
     let
       supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
       forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system (import nixpkgs { inherit system; }));
@@ -110,6 +111,14 @@
           displayName = "GTA: Liberty City Stories (reLCS)";
           steamDirName = "GTALCS_FIXME"; 
           dataDir = ".reLCS";
+        };
+
+        reVC-Improved = mkLauncher pkgs {
+          gamePkg = re3-miami-improved-repo.packages.${system}.default;
+          program = "reVC-Improved";
+          displayName = "GTA: Vice City (reVC Improved)";
+          steamDirName = "Grand Theft Auto Vice City"; 
+          dataDir = ".reVC-Improved";
         };
       });
     };
