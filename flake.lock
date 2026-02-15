@@ -391,11 +391,11 @@
         "opusfile": "opusfile_3"
       },
       "locked": {
-        "lastModified": 1771127032,
-        "narHash": "sha256-HaqdO2OnhMCwk8vbWUi6tka1LD5WMB5bHXrMtCBf3Jc=",
+        "lastModified": 1771127432,
+        "narHash": "sha256-6QF9UlIdpVV0WfbpLfHLorhp105uIbLDzP2/uxjNPrc=",
         "owner": "gujial",
         "repo": "re3",
-        "rev": "dba902eb28fb3b6f5cf1c7b3ca395137b0e5dec3",
+        "rev": "699341bccb54981c86bca514ee162903ddc71f7e",
         "type": "github"
       },
       "original": {
