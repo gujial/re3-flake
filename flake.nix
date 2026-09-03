@@ -2,26 +2,47 @@
   description = "Launcher wrapper for re3 (GTA III, VC, LCS) with Desktop entries";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    
-    re3-master-repo.url = "github:gujial/re3/master"; 
-    re3-miami-repo.url  = "github:gujial/re3/miami";
-    re3-lcs-repo.url    = "github:gujial/re3/lcs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+
+    re3-master-repo.url = "github:gujial/re3/master";
+    re3-miami-repo.url = "github:gujial/re3/miami";
+    re3-lcs-repo.url = "github:gujial/re3/lcs";
     re3-miami-improved-repo.url = "github:gujial/re3/miami-improve";
   };
 
-  outputs = { self, nixpkgs, re3-master-repo, re3-miami-repo, re3-lcs-repo, re3-miami-improved-repo, ... }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      re3-master-repo,
+      re3-miami-repo,
+      re3-lcs-repo,
+      re3-miami-improved-repo,
+      ...
+    }:
     let
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
-      forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system (import nixpkgs { inherit system; }));
+      supportedSystems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+      forAllSystems =
+        f: nixpkgs.lib.genAttrs supportedSystems (system: f system (import nixpkgs { inherit system; }));
 
-      mkLauncher = pkgs: { gamePkg, program, steamDirName, dataDir, displayName }: 
+      mkLauncher =
+        pkgs:
+        {
+          gamePkg,
+          program,
+          steamDirName,
+          dataDir,
+          displayName,
+        }:
         let
           # 1. 先创建包装脚本
           wrapperScript = pkgs.writeShellScript "${program}-wrapper" ''
             set -e
             TARGET_DIR="$HOME/${dataDir}"
-            
+
             if [ ! -d "$TARGET_DIR" ]; then
               echo "--- 正在初始化 ${displayName} 原始文件 ---"
               DEFAULT_STEAM_PATH="$HOME/.steam/steam/steamapps/common/${steamDirName}"
@@ -85,41 +106,43 @@
 
     in
     {
-      packages = forAllSystems (system: pkgs: {
-        # GTA III
-        re3 = mkLauncher pkgs {
-          gamePkg = re3-master-repo.packages.${system}.default;
-          program = "re3";
-          displayName = "Grand Theft Auto III (re3)";
-          steamDirName = "Grand Theft Auto 3";
-          dataDir = ".re3";
-        };
+      packages = forAllSystems (
+        system: pkgs: {
+          # GTA III
+          re3 = mkLauncher pkgs {
+            gamePkg = re3-master-repo.packages.${system}.default;
+            program = "re3";
+            displayName = "Grand Theft Auto III (re3)";
+            steamDirName = "Grand Theft Auto 3";
+            dataDir = ".re3";
+          };
 
-        # GTA Vice City
-        reVC = mkLauncher pkgs {
-          gamePkg = re3-miami-repo.packages.${system}.default; 
-          program = "reVC";
-          displayName = "Grand Theft Auto: Vice City (reVC)";
-          steamDirName = "Grand Theft Auto Vice City"; 
-          dataDir = ".reVC";
-        };
+          # GTA Vice City
+          reVC = mkLauncher pkgs {
+            gamePkg = re3-miami-repo.packages.${system}.default;
+            program = "reVC";
+            displayName = "Grand Theft Auto: Vice City (reVC)";
+            steamDirName = "Grand Theft Auto Vice City";
+            dataDir = ".reVC";
+          };
 
-        # GTA Liberty City Stories
-        reLCS = mkLauncher pkgs {
-          gamePkg = re3-lcs-repo.packages.${system}.default;
-          program = "reLCS";
-          displayName = "GTA: Liberty City Stories (reLCS)";
-          steamDirName = "GTALCS_FIXME"; 
-          dataDir = ".reLCS";
-        };
+          # GTA Liberty City Stories
+          reLCS = mkLauncher pkgs {
+            gamePkg = re3-lcs-repo.packages.${system}.default;
+            program = "reLCS";
+            displayName = "GTA: Liberty City Stories (reLCS)";
+            steamDirName = "GTALCS_FIXME";
+            dataDir = ".reLCS";
+          };
 
-        reVC-Improved = mkLauncher pkgs {
-          gamePkg = re3-miami-improved-repo.packages.${system}.default;
-          program = "reVC-Improved";
-          displayName = "GTA: Vice City (reVC Improved)";
-          steamDirName = "Grand Theft Auto Vice City"; 
-          dataDir = ".reVC-Improved";
-        };
-      });
+          reVC-Improved = mkLauncher pkgs {
+            gamePkg = re3-miami-improved-repo.packages.${system}.default;
+            program = "reVC-Improved";
+            displayName = "GTA: Vice City (reVC Improved)";
+            steamDirName = "Grand Theft Auto Vice City";
+            dataDir = ".reVC-Improved";
+          };
+        }
+      );
     };
 }
