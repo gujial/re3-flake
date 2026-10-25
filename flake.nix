@@ -2,7 +2,7 @@
   description = "Launcher wrapper for re3 (GTA III, VC, LCS) with Desktop entries";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     re3-master-repo.url = "github:gujial/re3/master";
     re3-miami-repo.url = "github:gujial/re3/miami";
@@ -12,7 +12,6 @@
 
   outputs =
     {
-      self,
       nixpkgs,
       re3-master-repo,
       re3-miami-repo,
@@ -91,7 +90,7 @@
 
             # 创建桌面文件
             # 注意：Exec 指向我们这个包里的包装脚本
-            # Icon 名字对应源 Flake 里定义的图标名 (通常是 re3, reVC 等)
+            # Icon 名字对应源 Flake 里定义的图标名
             cat > $out/share/applications/${program}.desktop <<EOF
             [Desktop Entry]
             Name=${displayName}
